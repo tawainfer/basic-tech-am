@@ -1,0 +1,83 @@
+body {
+  /* テキストのデフォルト書式 */
+  color: #000;
+  font-size: 16px;
+  font-family: "Hiragino Kaku Gothic Pro", Meiryo, Osaka, "MS PGothic", sans-serif;
+  text-rendering: geometricPrecision;
+  /* ページの背景色 */
+  background-color: #f5f5dc;
+}
+
+#top {
+  margin-left: 15px;
+  margin-top: 15px;
+}
+
+h1 {
+  font-size: 26px;
+}
+
+#description {
+  display: inline-block;
+  border: 1.5px solid #000000;
+  padding: 5px;
+}
+
+#red {
+  width: 80px;
+}
+
+#blue {
+  width: 80px;
+}
+
+#message {
+  font-size: 16px;
+}
+
+#news {
+  background-color: #ddd;
+  padding-bottom: 5px;
+}
+
+#news h2 {
+  padding-top: 10px;
+  margin-left: 15px;
+  font-size: 20px;
+}
+
+#news p {
+  padding-left: 15px;
+  margin: 0px 0px 10px 0px;
+}
+
+#data p {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#all {
+  display: none;
+}
+
+#all h2 {
+  font-size: 24px;
+}
+
+#all p {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+#data table {
+  text-align: center;
+  background-color: #eee;
+}
+
+#data table th, td {
+  width: 120px;
+}
+
+#data div {
+  padding: 10px;
+}
