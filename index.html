@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="jp">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/reboot.css">
+  <link rel="stylesheet" href="css/style.css">
+  <title>基本情報 午前問題集 進捗確認</title>
+</head>
+
+<body>
+  <section id="top">
+    <h1><span style="color: #00e;">基本</span>情報 午前問題集 進捗確認</h1>
+    <p id="description">基本情報午前問題集の進捗を表示するサイトです。<br>CSV形式のファイルをアップロードしてください。</p>
+
+    <div id="option">
+      <p>0~100の範囲で数値を指定することで進捗の色分けが出来ます。<br>(赤色と青色の大小関係が逆転すると上手く反映されません)</p>
+
+      <p><input id="red" type="number" value="70">%以上を<span style="color:#e00;">赤色</span>で強調<br><input id="blue"
+          type="number" value="30">%未満を<span style="color:#00e;">青色</span>で強調</p>
+
+      <p><input id="csv_file" type="file"></p>
+    </div>
+
+    <p id="message"></p>
+  </section>
+
+  <section id=news>
+    <h2>更新履歴</h2>
+    <p><i>2022-11-06</i><br>ソースコードの大幅な修正に加え、タイトル名をクリックする事で下位の表にリンク出来るようにしました。</p>
+    <p><i>2022-11-03</i><br>全範囲の表で取り組み回数(1回・2回)を確認出来るようにしました。
+    </p>
+    <p><i>2022-11-02</i><br>サイトを公開しました。
+    </p>
+  </section>
+
+  <div id="data">
+    <div id="all">
+      <h2>●全範囲</h2>
+      <p><b>取り組み(1回以上)</b>...<span id="allOnce"></span>
+        <br>一度でも取り組んだことがある問題の割合です。
+      </p>
+      <p><b>取り組み(2回以上)</b>...<span id="allTwice"></span>
+        <br>2周した問題の割合です。
+      </p>
+      <p><b>達成率</b>...<span id="allAchievement"></span>
+        <br>一度でも正解したことがある問題の割合です。
+      </p>
+      <p><b>理解度</b>...<span id="allUnderstanding"></span>
+        <br>問題を最後に解いた際に正解したかどうかをまとめた割合です。
+      </p>
+    </div>
+  </div>
+
+  <script src="script/script.js"></script>
+</body>
+
+</html>
