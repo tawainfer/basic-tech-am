@@ -8,8 +8,15 @@ let chapIndex = 0;
 let sectIndex = 0;
 let upBorder = 0;
 let downBorder = 0;
-let startTime = 0;
-let endTime = 0;
+// let startTime = 0;
+// let endTime = 0;
+
+// 現在時刻の取得・カウントダウン
+setInterval(() => {
+  let targetTime = Math.floor(new Date(2022, 12 - 1, 11).getTime() / 1000);
+  let currentTime = Math.floor(new Date().getTime() / 1000);
+  console.log(targetTime - currentTime);
+}, 1000);
 
 // ファイル読み込みの設定
 let fileInput = document.getElementById("csv_file");
@@ -24,7 +31,7 @@ fileInput.onchange = () => {
 
 // ファイル読み込み成功時
 fileReader.onload = () => {
-  startTime = performance.now();
+  // startTime = performance.now();
 
   message.innerHTML = "読み込みに成功しました！";
   document.getElementById("option").style.display = "none";
@@ -38,8 +45,8 @@ fileReader.onload = () => {
   let result = fileReader.result;
   splitToLine(result);
 
-  endTime = performance.now();
-  console.log(endTime - startTime);
+  // endTime = performance.now();
+  // console.log(endTime - startTime);
   setTimeout(() => {
     generateSettingTable(-1, -1, -1);
     generateTable();
