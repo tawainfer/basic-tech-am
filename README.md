@@ -8,6 +8,4 @@
 
 ## ライセンス
 
-ライセンスを明示する
-
 "basic-tech-am" is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
