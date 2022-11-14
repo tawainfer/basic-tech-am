@@ -8,15 +8,35 @@ let chapIndex = 0;
 let sectIndex = 0;
 let upBorder = 0;
 let downBorder = 0;
+let schedule = [
+  ["午前免除(12月)", new Date(2022, 12 - 1, 11, 9, 15, 0)],
+  ["午前免除(1月)", new Date(2023, 1 - 1, 22, 9, 15, 0)]
+]
 // let startTime = 0;
 // let endTime = 0;
 
 // 現在時刻の取得・カウントダウン
-setInterval(() => {
-  let targetTime = Math.floor(new Date(2022, 12 - 1, 11).getTime() / 1000);
-  let currentTime = Math.floor(new Date().getTime() / 1000);
-  console.log(targetTime - currentTime);
-}, 1000);
+let countdown = setInterval(() => {
+  let currentTime = new Date();
+  
+  for(let i = 0; i < schedule.length; i++) {
+    let targetTime = schedule[i][1];
+    let remainTime = targetTime - currentTime;
+    if(remainTime < 0) remainTime = 0;
+
+    //差分の日・時・分・秒を取得
+    let diffDay  = Math.floor(remainTime / 1000 / 60 / 60 / 24);
+    let diffHour = Math.floor(remainTime / 1000 / 60 / 60 ) % 24;
+    let diffMin  = Math.floor(remainTime / 1000 / 60) % 60;
+    let diffSec  = Math.floor(remainTime / 1000) % 60;
+
+    //残りの日時を上書き
+    document.getElementById(`day${i + 1}`).innerHTML  = diffDay;
+    document.getElementById(`hour${i + 1}`).innerHTML = diffHour;
+    document.getElementById(`min${i + 1}`).innerHTML  = diffMin;
+    document.getElementById(`sec${i + 1}`).innerHTML  = diffSec;
+  }
+}, 1000)    //1秒間に1度処理
 
 // ファイル読み込みの設定
 let fileInput = document.getElementById("csv_file");
