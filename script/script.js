@@ -6,11 +6,12 @@ let problem = [];
 let unitIndex = 0;
 let chapIndex = 0;
 let sectIndex = 0;
-let upBorder = 0;
-let downBorder = 0;
+let upBorder = 101;
+let downBorder = -1;
+let isHeatmap = false;
 let schedule = [
   ["午前免除(12月)", new Date(2022, 12 - 1, 11, 9, 15, 0)],
-  ["午前免除(1月)", new Date(2023, 1 - 1, 22, 9, 15, 0)]
+  ["午前免除(1月)", new Date(2023, 1 - 1, 22, 9, 15, 0)],
 ]
 // let startTime = 0;
 // let endTime = 0;
@@ -18,34 +19,44 @@ let schedule = [
 // 現在時刻の取得・カウントダウン
 let countdown = setInterval(() => {
   let currentTime = new Date();
-  
-  for(let i = 0; i < schedule.length; i++) {
+
+  for (let i = 0; i < schedule.length; i++) {
     let targetTime = schedule[i][1];
     let remainTime = targetTime - currentTime;
-    if(remainTime < 0) remainTime = 0;
+    if (remainTime < 0) remainTime = 0;
 
     //差分の日・時・分・秒を取得
-    let diffDay  = Math.floor(remainTime / 1000 / 60 / 60 / 24);
-    let diffHour = Math.floor(remainTime / 1000 / 60 / 60 ) % 24;
-    let diffMin  = Math.floor(remainTime / 1000 / 60) % 60;
-    let diffSec  = Math.floor(remainTime / 1000) % 60;
+    let diffDay = Math.floor(remainTime / 1000 / 60 / 60 / 24);
+    let diffHour = Math.floor(remainTime / 1000 / 60 / 60) % 24;
+    let diffMin = Math.floor(remainTime / 1000 / 60) % 60;
+    let diffSec = Math.floor(remainTime / 1000) % 60;
 
     //残りの日時を上書き
-    document.getElementById(`day${i + 1}`).innerHTML  = diffDay;
+    document.getElementById(`day${i + 1}`).innerHTML = diffDay;
     document.getElementById(`hour${i + 1}`).innerHTML = diffHour;
-    document.getElementById(`min${i + 1}`).innerHTML  = diffMin;
-    document.getElementById(`sec${i + 1}`).innerHTML  = diffSec;
+    document.getElementById(`min${i + 1}`).innerHTML = diffMin;
+    document.getElementById(`sec${i + 1}`).innerHTML = diffSec;
   }
 }, 1000)    //1秒間に1度処理
+
+// ボーダーカラー表示が有効ならオプションを表示する
+let isBorder = () => {
+  if(document.getElementById("border").checked) {
+    document.getElementById("settingBorder").style.display = "block";
+  } else {
+    document.getElementById("settingBorder").style.display = "none";
+  }
+}
 
 // ファイル読み込みの設定
 let fileInput = document.getElementById("csv_file");
 let message = document.getElementById("message");
 let fileReader = new FileReader();
+let file;
 
 // ファイル読み込み時
 fileInput.onchange = () => {
-  let file = fileInput.files[0];
+  file = fileInput.files[0];
   fileReader.readAsText(file, "Shift_JIS");
 }
 
@@ -53,29 +64,55 @@ fileInput.onchange = () => {
 fileReader.onload = () => {
   // startTime = performance.now();
 
-  message.innerHTML = "読み込みに成功しました！";
   document.getElementById("option").style.display = "none";
   document.getElementById("news").style.display = "none";
-  document.getElementById("all").style.display = "block";
 
-  upBorder = Number(document.getElementById("red").value);
-  downBorder = Number(document.getElementById("blue").value);
+  if ((file.name.match(/.csv$/)) === null) {
+    message.innerHTML = "不正なファイル形式です。ファイル形式を確認して再度アップロードしてください。";
+    document.getElementById("message").style.color = "#f00";
+  } else {
+    message.innerHTML = "読み込みに成功しました！";
+    document.getElementById("all").style.display = "block";
+    
+    if(document.getElementById("border").checked) {
+      upBorder = Number(document.getElementById("red").value);
+      downBorder = Number(document.getElementById("blue").value);
+    }
 
-  all = makeObject(all, false);
-  let result = fileReader.result;
-  splitToLine(result);
+    if(document.getElementById("heatmap").checked) isHeatmap = true;
+    
+    all = makeObject(all, false);
+    let result = fileReader.result;
+    result = specialCharacter(result);
+    splitToLine(result);
 
-  // endTime = performance.now();
-  // console.log(endTime - startTime);
-  setTimeout(() => {
-    generateSettingTable(-1, -1, -1);
-    generateTable();
-  }, 500);
+    // endTime = performance.now();
+    // console.log(endTime - startTime);
+    setTimeout(() => {
+      generateSettingTable(-1, -1, -1);
+      generateTable();
+    }, 500);
+  }
 }
 
 // ファイル読み込み失敗時
 fileReader.onerror = () => {
   message.innerHTML = "ファイル読み込みに失敗しました。ブラウザを更新してから再度お試しください。";
+  document.getElementById("message").style.color = "#f00";
+}
+
+let specialCharacter = s => {
+  let t = "";
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] == '&') t += "&amp;";
+    else if (s[i] == '<') t += "&lt;";
+    else if (s[i] == '>') t += "&gt;";
+    else if (s[i] == '"') t += "&quot;";
+    else if (s[i] == "'") t += "$#39;";
+    else t += s[i];
+  }
+
+  return t;
 }
 
 // 行単位に分割
@@ -209,10 +246,13 @@ let processProblem = (v, cnt) => {
         e["correctCnt"]++;
         e["lastAnswer"] = true;
         e["evenOnceAnswer"] = true;
-      } else {
+      } else if (s[i] === 'x') {
         e["wrongCnt"]++;
         e["lastAnswer"] = false;
         e["evenOnceWrong"] = true;
+      } else {
+        message.innerHTML = `進捗の記入に'o', 'x'以外の文字が使われているため、進捗を正しく集計出来ていない可能性があります。CSVファイルの内容をご確認ください。`;
+        document.getElementById("message").style.color = "#f00";
       }
     }
 
@@ -290,11 +330,11 @@ let generateUnitTable = (p, e) => {
   let sum = all["problemCnt"];
   let once = sum - binarySearch(all["solveCnt"], 1);
   let rate = (once / sum * 100).toFixed(2);
-  document.getElementById("allOnce").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${once}問解答)</span>`;
+  document.getElementById("allOnce").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${once}問正解)</span>`;
 
   let twice = sum - binarySearch(all["solveCnt"], 2);
   rate = (twice / sum * 100).toFixed(2);
-  document.getElementById("allTwice").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${twice}問解答)</span>`;
+  document.getElementById("allTwice").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${twice}問正解)</span>`;
 
   let achievement = all["evenOnceAnswer"];
   rate = (achievement / sum * 100).toFixed(2);
@@ -319,7 +359,7 @@ let generateUnitTable = (p, e) => {
     let sum = unit[i]["problemCnt"];
     let once = sum - binarySearch(unit[i]["solveCnt"], 1);
     let rate = (once / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${once} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${once} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -328,7 +368,7 @@ let generateUnitTable = (p, e) => {
     let sum = unit[i]["problemCnt"];
     let twice = sum - binarySearch(unit[i]["solveCnt"], 2);
     let rate = (twice / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${twice} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${twice} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -337,7 +377,7 @@ let generateUnitTable = (p, e) => {
     let sum = unit[i]["problemCnt"];
     let achievement = unit[i]["evenOnceAnswer"];
     let rate = (achievement / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -346,7 +386,7 @@ let generateUnitTable = (p, e) => {
     let sum = unit[i]["problemCnt"];
     let last = unit[i]["lastAnswer"];
     let rate = (last / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -376,7 +416,7 @@ let generateChapterTable = (p, e, u) => {
     let sum = chapter[u][i]["problemCnt"];
     let once = sum - binarySearch(chapter[u][i]["solveCnt"], 1);
     let rate = (once / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${once} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${once} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -385,7 +425,7 @@ let generateChapterTable = (p, e, u) => {
     let sum = chapter[u][i]["problemCnt"];
     let twice = sum - binarySearch(chapter[u][i]["solveCnt"], 2);
     let rate = (twice / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${twice} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${twice} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -394,7 +434,7 @@ let generateChapterTable = (p, e, u) => {
     let sum = chapter[u][i]["problemCnt"];
     let achievement = chapter[u][i]["evenOnceAnswer"];
     let rate = (achievement / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -403,7 +443,7 @@ let generateChapterTable = (p, e, u) => {
     let sum = chapter[u][i]["problemCnt"];
     let last = chapter[u][i]["lastAnswer"];
     let rate = (last / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -434,7 +474,7 @@ let generateSectionTable = (p, e, u, c) => {
     let sum = section[u][c][i]["problemCnt"];
     let once = sum - binarySearch(section[u][c][i]["solveCnt"], 1);
     let rate = (once / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${once} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${once} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -443,7 +483,7 @@ let generateSectionTable = (p, e, u, c) => {
     let sum = section[u][c][i]["problemCnt"];
     let twice = sum - binarySearch(section[u][c][i]["solveCnt"], 2);
     let rate = (twice / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${twice} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${twice} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -452,7 +492,7 @@ let generateSectionTable = (p, e, u, c) => {
     let sum = section[u][c][i]["problemCnt"];
     let achievement = section[u][c][i]["evenOnceAnswer"];
     let rate = (achievement / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -461,7 +501,7 @@ let generateSectionTable = (p, e, u, c) => {
     let sum = section[u][c][i]["problemCnt"];
     let last = section[u][c][i]["lastAnswer"];
     let rate = (last / sum * 100).toFixed(2);
-    s += `<td><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
+    s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
   }
   s += "</tr>";
 
@@ -506,8 +546,8 @@ let generateProblemTable = (p, e, u, c, si) => {
     s += "<tr><td><b>最後に正解</b></td>";
     for (let i = (r * 15); i < Math.min(problem[u][c][si].length, (r + 1) * 15); i++) {
       let ans;
-      if (problem[u][c][si][i]["lastAnswer"]) ans = "o";
-      else ans = "x";
+      if (problem[u][c][si][i]["lastAnswer"]) ans = 'o';
+      else ans = 'x';
       s += `<td>${ans}</td>`;
     }
     s += "</tr>";
@@ -553,6 +593,15 @@ let changeDisplay = (u, c, si) => {
 
 let changeColor = n => {
   if (n >= upBorder) return "#e00";
-  else if(n < downBorder) return "#00e";
+  else if (n < downBorder) return "#00e";
   else return "#000";
+}
+
+let changeBackgroundColor = n => {
+  console.log(n);
+  if(isHeatmap) {
+    let baseOpacity = n / 200;
+    return `rgba(255, 0, 0, ${baseOpacity})`;
+  }
+  else return "#eee";
 }
