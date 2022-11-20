@@ -36,6 +36,10 @@ h1 {
   padding: 10px;
 }
 
+#settingBorder {
+  display: none;
+}
+
 #red {
   width: 80px;
 }
@@ -62,6 +66,7 @@ h1 {
 #news p {
   padding-left: 15px;
   margin: 0px 0px 10px 0px;
+  line-height: 26px;
 }
 
 #data p {
