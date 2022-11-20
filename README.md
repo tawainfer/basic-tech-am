@@ -1,5 +1,6 @@
 # basic-tech-am
-基本情報午前問題集の進捗を確認出来るサイトです。<br><br><br>
+基本情報午前問題集の進捗を確認出来るサイトです。<br>
+https://tawainfer.github.io/basic-tech-am/<br><br><br>
 
 ## 使い方
 
