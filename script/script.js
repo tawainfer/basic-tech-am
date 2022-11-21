@@ -73,14 +73,14 @@ fileReader.onload = () => {
   } else {
     message.innerHTML = "読み込みに成功しました！";
     document.getElementById("all").style.display = "block";
-    
+
     if(document.getElementById("border").checked) {
       upBorder = Number(document.getElementById("red").value);
       downBorder = Number(document.getElementById("blue").value);
     }
 
     if(document.getElementById("heatmap").checked) isHeatmap = true;
-    
+
     all = makeObject(all, false);
     let result = fileReader.result;
     result = specialCharacter(result);
@@ -600,7 +600,7 @@ let changeColor = n => {
 let changeBackgroundColor = n => {
   console.log(n);
   if(isHeatmap) {
-    let baseOpacity = n / 200;
+    let baseOpacity = n / 150;
     return `rgba(255, 0, 0, ${baseOpacity})`;
   }
   else return "#eee";
