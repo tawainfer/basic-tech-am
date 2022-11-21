@@ -9,6 +9,7 @@ let sectIndex = 0;
 let upBorder = 101;
 let downBorder = -1;
 let isHeatmap = false;
+let isHundred = false;
 let schedule = [
   ["午前免除(12月)", new Date(2022, 12 - 1, 11, 9, 15, 0)],
   ["午前免除(1月)", new Date(2023, 1 - 1, 22, 9, 15, 0)],
@@ -80,6 +81,7 @@ fileReader.onload = () => {
     }
 
     if(document.getElementById("heatmap").checked) isHeatmap = true;
+    if(document.getElementById("hundred").checked) isHundred = true;
 
     all = makeObject(all, false);
     let result = fileReader.result;
@@ -598,10 +600,10 @@ let changeColor = n => {
 }
 
 let changeBackgroundColor = n => {
-  console.log(n);
   if(isHeatmap) {
     let baseOpacity = n / 250;
-    return `rgba(255, 0, 0, ${baseOpacity})`;
+    if(isHundred && n == 100) return `rgba(255, 215, 0, 0.2)`;
+    else return `rgba(255, 0, 0, ${baseOpacity})`;
   }
   else return "#eee";
 }
