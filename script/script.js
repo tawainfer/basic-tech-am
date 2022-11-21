@@ -600,7 +600,7 @@ let changeColor = n => {
 let changeBackgroundColor = n => {
   console.log(n);
   if(isHeatmap) {
-    let baseOpacity = n / 150;
+    let baseOpacity = n / 250;
     return `rgba(255, 0, 0, ${baseOpacity})`;
   }
   else return "#eee";
