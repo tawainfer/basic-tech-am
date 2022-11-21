@@ -38,7 +38,8 @@
 
     <div id="option">
       <p><input
-          id="heatmap" type="checkbox" name="heatmap" value="1" checked>ヒートマップ表示<br><input id="border" type="checkbox" name="border" value="1" onchange="isBorder()">ボーダーカラー表示</p>
+          id="heatmap" type="checkbox" name="heatmap" value="1" checked>ヒートマップ表示 <input
+          id="hundred" type="checkbox" name="hundred" value="1">100%を強調<br><input id="border" type="checkbox" name="border" value="1" onchange="isBorder()">ボーダーカラー表示</p>
 
       <div id="settingBorder">
         <p>0~100の範囲で数値を指定することで進捗の色分けが出来ます。<br>(赤色と青色の大小関係が逆転すると上手く反映されません)</p>
@@ -54,7 +55,7 @@
 
   <section id="news">
     <h2>更新履歴</h2>
-    <p><i>2022-11-21</i><br>ヒートマップ表示の背景色を調整しました。</p>
+    <p><i>2022-11-21</i><br>ヒートマップ表示の背景色を調整しました。また、ヒートマップ表示で100%を強調する機能を追加しました。</p>
     <p><i>2022-11-20</i><br>色分けのオプションとしてヒートマップ表示を追加しました。ボーダーカラー表示の視認性が個人的に良くないと感じていたため、デフォルトの表示はボーダーカラー表示を無効、ヒートマップ表示を有効としました。これらはチェックボックスから有効・無効の切り替えが出来ます。また、進捗の記入に'o', 'x'以外の文字が使われている際に正しく進捗を集計出来ない可能性がある旨を表示するようになりました。その他、アップロードの仕様を見直しました。</p>
     <p><i>2022-11-17</i><br>Githubへのリンクをページ上部に追加しました。</p>
     <p><i>2022-11-14</i><br>午前免除試験(12月・1月)の日時とカウントダウンを表示出来るようにしました。</p>
