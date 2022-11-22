@@ -332,11 +332,11 @@ let generateUnitTable = (p, e) => {
   let sum = all["problemCnt"];
   let once = sum - binarySearch(all["solveCnt"], 1);
   let rate = (once / sum * 100).toFixed(2);
-  document.getElementById("allOnce").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${once}問正解)</span>`;
+  document.getElementById("allOnce").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${once}問解答)</span>`;
 
   let twice = sum - binarySearch(all["solveCnt"], 2);
   rate = (twice / sum * 100).toFixed(2);
-  document.getElementById("allTwice").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${twice}問正解)</span>`;
+  document.getElementById("allTwice").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${twice}問解答)</span>`;
 
   let achievement = all["evenOnceAnswer"];
   rate = (achievement / sum * 100).toFixed(2);
