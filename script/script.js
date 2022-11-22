@@ -602,7 +602,7 @@ let changeColor = n => {
 let changeBackgroundColor = n => {
   if(isHeatmap) {
     let baseOpacity = n / 250;
-    if(isHundred && n == 100) return `rgba(255, 215, 0, 0.2)`;
+    if(isHundred && n == 100) return "#c4e2cb";
     else return `rgba(255, 0, 0, ${baseOpacity})`;
   }
   else return "#eee";
