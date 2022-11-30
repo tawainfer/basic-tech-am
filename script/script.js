@@ -18,7 +18,11 @@ let oldYear = 1994;
 let newYear = 2019;
 let upYear = 2021;
 let downYear = 2017;
-let problemList = [];
+let choiceList = [];
+let problemListAll = [];
+let problemListT = [];
+let problemListM = [];
+let problemListS = [];
 // let startTime = 0;
 // let endTime = 0;
 
@@ -247,6 +251,12 @@ let processSection = v => {
 // 問題の処理
 let processProblem = (v, cnt) => {
   for (let probIndex = 0; probIndex < cnt; probIndex++) {
+    problemListAll.push([unitIndex, chapIndex, sectIndex, probIndex]);
+
+    if (unitIndex < 7) problemListT.push([unitIndex, chapIndex, sectIndex, probIndex]);
+    else if (unitIndex === 7) problemListS.push([unitIndex, chapIndex, sectIndex, probIndex]);
+    else problemListM.push([unitIndex, chapIndex, sectIndex, probIndex]);
+
     let e = problem[unitIndex][chapIndex][sectIndex][probIndex];
     e = makeObject(e, true);
 
@@ -366,12 +376,14 @@ let generateUnitTable = (p, e) => {
   let sum2 = all["solveCnt"].length - binarySearch(all["solveCnt"], 1);
   let achievement = all["evenOnceAnswer"];
   let rate2 = ((achievement / sum2 * 100).toFixed(2));
+  if(sum2 === 0) rate2 = (0 / 1).toFixed(2);
   rate = (achievement / sum * 100).toFixed(2);
   document.getElementById("allAchievementA").innerHTML = `<span style="color:${changeColor(rate2)};">${rate2}%(${sum2}問中${achievement}問正解)</span>`;
   document.getElementById("allAchievementB").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${achievement}問正解)</span>`;
 
   let last = all["lastAnswer"];
   let rate3 = (last / sum2 * 100).toFixed(2);
+  if(sum2 === 0) rate3 = (0 / 1).toFixed(2);
   rate = (last / sum * 100).toFixed(2);
   document.getElementById("allUnderstandingA").innerHTML = `<span style="color:${changeColor(rate)};">${rate3}%(${sum2}問中${last}問正解)</span>`;
   document.getElementById("allUnderstandingB").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${last}問正解)</span>`;
@@ -409,6 +421,7 @@ let generateUnitTable = (p, e) => {
     let sum = unit[i]["solveCnt"].length - binarySearch(unit[i]["solveCnt"], 1);
     let achievement = unit[i]["evenOnceAnswer"];
     let rate = (achievement / sum * 100).toFixed(2);
+    if(sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -427,6 +440,7 @@ let generateUnitTable = (p, e) => {
     let sum = unit[i]["solveCnt"].length - binarySearch(unit[i]["solveCnt"], 1);
     let last = unit[i]["lastAnswer"];
     let rate = (last / sum * 100).toFixed(2);
+    if(sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -484,6 +498,7 @@ let generateChapterTable = (p, e, u) => {
     let sum = chapter[u][i]["solveCnt"].length - binarySearch(chapter[u][i]["solveCnt"], 1);
     let achievement = chapter[u][i]["evenOnceAnswer"];
     let rate = (achievement / sum * 100).toFixed(2);
+    if(sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -502,6 +517,7 @@ let generateChapterTable = (p, e, u) => {
     let sum = chapter[u][i]["solveCnt"].length - binarySearch(chapter[u][i]["solveCnt"], 1);
     let last = chapter[u][i]["lastAnswer"];
     let rate = (last / sum * 100).toFixed(2);
+    if(sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -560,6 +576,7 @@ let generateSectionTable = (p, e, u, c) => {
     let sum = section[u][c][i]["solveCnt"].length - binarySearch(section[u][c][i]["solveCnt"], 1);
     let achievement = section[u][c][i]["evenOnceAnswer"];
     let rate = (achievement / sum * 100).toFixed(2);
+    if(sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -578,6 +595,7 @@ let generateSectionTable = (p, e, u, c) => {
     let sum = section[u][c][i]["solveCnt"].length - binarySearch(section[u][c][i]["solveCnt"], 1);
     let last = section[u][c][i]["lastAnswer"];
     let rate = (last / sum * 100).toFixed(2);
+    if(sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -693,7 +711,7 @@ let changeBackgroundColor = n => {
 }
 
 let changeMode = s => {
-  if(s === "data") {
+  if (s === "data") {
     document.getElementById("data").style.display = "block";
     document.getElementById("all").style.display = "block";
     document.getElementById("buttonData").style.color = "#fff";
@@ -716,7 +734,7 @@ let makeSelectOption = () => {
   let d = document.getElementById("selectDownYear");
   let u = document.getElementById("selectUpYear");
 
-  for(let i = oldYear; i <= newYear; i++) {
+  for (let i = oldYear; i <= newYear; i++) {
     let e1 = document.createElement("option");
     e1.setAttribute("value", String(i));
     e1.innerHTML = `${i}`;
@@ -729,13 +747,80 @@ let makeSelectOption = () => {
   }
 }
 
+let changeShowingMode = () => {
+  if (document.getElementById("radioShowingAll").checked) {
+    document.getElementById("questionAll").style.display = "block";
+    document.getElementById("questionGenre").style.display = "none";
+  } else {
+    document.getElementById("questionAll").style.display = "none";
+    document.getElementById("questionGenre").style.display = "block";
+  }
+}
+
+let shuffleArray = v => {
+  for (let loop = 0; loop < 10000; loop++) {
+    for (var i = (v.length - 1); 0 < i; i--) {
+      var r = Math.floor(Math.random() * (i + 1));
+      var tmp = v[i];
+      v[i] = v[r];
+      v[r] = tmp;
+    }
+  }
+  return v;
+}
+
 let makeProblemList = () => {
   let p = document.getElementById("problemList");
   if (p != null) p.remove();
   p = document.createElement("ul");
   p.setAttribute("id", "problemList");
-  problemList.length = 0;
+  choiceList.length = 0;
+  problemListAll.sort((a, b) => {
+    for (let i = 0; i < 4; i++) {
+      if (a[i] > b[i]) return 1;
+      if (a[i] < b[i]) return -1;
+    }
+  });
+  problemListT.sort((a, b) => {
+    for (let i = 0; i < 4; i++) {
+      if (a[i] > b[i]) return 1;
+      if (a[i] < b[i]) return -1;
+    }
+  });
+  problemListM.sort((a, b) => {
+    for (let i = 0; i < 4; i++) {
+      if (a[i] > b[i]) return 1;
+      if (a[i] < b[i]) return -1;
+    }
+  });
+  problemListS.sort((a, b) => {
+    for (let i = 0; i < 4; i++) {
+      if (a[i] > b[i]) return 1;
+      if (a[i] < b[i]) return -1;
+    }
+  });
+  downYear = document.getElementById("selectDownYear").value;
+  upYear = document.getElementById("selectUpYear").value;
+  console.log(problemListAll, problemListT, problemListM, problemListS);
+  if (document.getElementById("radioShowingAll").checked) {
+    let problemMaxAll = Math.min(problemListAll.length, document.getElementById("numberAll").value);
+    console.log(problemMaxAll);
 
+    problemListAll = shuffleArray(problemListAll);
+    console.log(problemListAll);
+  } else {
+    let problemMaxT = Math.min(problemListT.length, document.getElementById("numberT").value);
+    let problemMaxM = Math.min(problemListM.length, document.getElementById("numberM").value);
+    let problemMaxS = Math.min(problemListS.length, document.getElementById("numberS").value);
+    console.log(problemMaxT, problemMaxM, problemMaxS);
+
+    problemListT = shuffleArray(problemListT);
+    problemListM = shuffleArray(problemListM);
+    problemListS = shuffleArray(problemListS);
+    console.log(problemListT, problemListM, problemListS);
+  }
+
+  let choiceCnt = 0;
   for (let i = 0; i < unit.length; i++) {
     for (let j = 0; j < chapter[i].length; j++) {
       for (let k = 0; k < section[i][j].length; k++) {
@@ -743,14 +828,18 @@ let makeProblemList = () => {
           let prob = problem[i][j][k][l];
 
           if (downYear <= prob["year"] && prob["year"] <= upYear) {
-            problemList.push([i, j, k, l]);
+            if (document.getElementById("radioShowingAll").checked) {
+
+            } else {
+
+            }
           }
         }
       }
     }
   }
 
-  problemList.forEach(e => {
+  choiceList.forEach(e => {
     console.log(e[0] + 1, e[1] + 1, e[2] + 1, e[3] + 1);
   });
 }
