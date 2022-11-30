@@ -55,6 +55,7 @@
 
   <section id="news">
     <h2>更新履歴</h2>
+    <p><i>2022-11-30</i><br>達成率Aと理解度Aの表示で1問も解答していない場合に「NaN%」と表示される点を修正しました。</p>
     <p><i>2022-11-28</i><br>達成率と理解度をA(未解答を除外)・B(未解答は不正解扱い)の2種類に細分化しました。</p>
     <p><i>2022-11-22</i><br>ヒートマップ表示 で100%を強調する機能の背景色を調整しました。</p>
     <p><i>2022-11-21</i><br>ヒートマップ表示の背景色を調整しました。また、ヒートマップ表示で100%を強調する機能を追加しました。</p>
@@ -103,11 +104,36 @@
   <div id="gacha">
     <h2>問題ガチャ</h2>
     <p>指定した条件に一致した問題をリスト形式で表示します。</p>
-    <p>●出題年
+    <h3>●出題年</h3>
+    <p>
       <select id="selectDownYear"></select> 年 ～
       <select id="selectUpYear"></select> 年
     </p>
-    <p><input type="button" value="検索" onchange="makeProblemList()"></p>
+
+    <div>
+      <h3>●表示問題数</h3>
+      <p id="showindSetting">
+        <input type="radio" id="radioShowingAll" name="showingMode" onchange="changeShowingMode()"> 全範囲から指定する<br>
+        <input type="radio" name="showingMode" onchange="changeShowingMode()" checked> 分野別に指定する
+      </p>
+
+      <div id="questionAll">
+        <p style="background-color: #aaa;">全分野(ランダム)<br><input type="number" id="numberAll" class="questionCnt"
+            value="50"> 問
+        </p>
+      </div>
+
+      <div id="questionGenre">
+        <p style="background-color: #31a9ee;">テクノロジ(T)<br><input type="number" id="numberT" class="questionCnt"
+            value="50"> 問</p>
+        <p style="background-color: #ec8c37;">マネジメント(M)<br><input type="number" id="numberM" class="questionCnt"
+            value="10"> 問</p>
+        <p style="background-color: #aee442;">ストラテジ(S)<br><input type="number" id="numberS" class="questionCnt"
+            value="20"> 問</p>
+      </div>
+    </div>
+
+    <p><input type="button" value="検索" onclick="makeProblemList()"></p>
   </div>
 
   <script src="script/script.js"></script>
