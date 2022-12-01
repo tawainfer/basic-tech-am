@@ -55,6 +55,7 @@
 
   <section id="news">
     <h2>更新履歴</h2>
+    <p><i>2022-12-01</i><br>問題ガチャを実装しました。CSVファイルの読み込み後に表示されるメニューで「Gacha」をクリックすると表示されます。また、単元名のリンクをクリックした際に自動で下層へスクロールされるようになりました。その他、一部レイアウトを修正しました。</p>
     <p><i>2022-11-30</i><br>達成率Aと理解度Aの表示で1問も解答していない場合に「NaN%」と表示される点を修正しました。</p>
     <p><i>2022-11-28</i><br>達成率と理解度をA(未解答を除外)・B(未解答は不正解扱い)の2種類に細分化しました。</p>
     <p><i>2022-11-22</i><br>ヒートマップ表示 で100%を強調する機能の背景色を調整しました。</p>
@@ -74,7 +75,7 @@
 
   <p id="menu">
     <input type="button" name="mode" id="buttonData" value="Data" onclick="changeMode(`data`)">
-    <input type="button" name="mode" id="buttonGacha" value="Gacha" ><span style="color: #999">←実装中！</span>
+    <input type="button" name="mode" id="buttonGacha" value="Gacha" onclick="changeMode(`gacha`)">
   </p>
 
   <div id="data">
@@ -103,23 +104,29 @@
 
   <div id="gacha">
     <h2>問題ガチャ</h2>
-    <p>指定した条件に一致した問題をリスト形式で表示します。</p>
-    <h3>●出題年</h3>
-    <p>
-      <select id="selectDownYear"></select> 年 ～
-      <select id="selectUpYear"></select> 年
+    <p>指定した条件に一致した問題をリスト形式で表示します。<br>
+      問題数や表示順を指定して試験形式で表示したり、苦手な問題や直近3年分などの条件で検索する事で直前対策にも活用出来ます。
     </p>
 
-    <div>
-      <h3>●表示問題数</h3>
-      <p id="showindSetting">
-        <input type="radio" id="radioShowingAll" name="showingMode" onchange="changeShowingMode()"> 全範囲から指定する<br>
-        <input type="radio" name="showingMode" onchange="changeShowingMode()" checked> 分野別に指定する
+    <div class="gachaOption">
+      <h3>●出題年</h3>
+      <p>
+        <select id="selectDownYear"></select> 年 ～
+        <select id="selectUpYear"></select> 年
       </p>
+    </div>
+
+    <div class="gachaOption">
+      <h3>●表示問題数</h3>
+      <p>入力を空欄か0以下の値にした場合は検索オプションに一致した問題を全て表示します。</p>
+      <form id="showingCnt">
+        <input type="radio" id="showingAll" name="showingMode" onchange="changeShowingMode()"> 全範囲から指定する<br>
+        <input type="radio" name="showingMode" onchange="changeShowingMode()" checked> 分野別に指定する
+      </form>
 
       <div id="questionAll">
         <p style="background-color: #aaa;">全分野(ランダム)<br><input type="number" id="numberAll" class="questionCnt"
-            value="50"> 問
+            value="80"> 問
         </p>
       </div>
 
@@ -133,7 +140,28 @@
       </div>
     </div>
 
-    <p><input type="button" value="検索" onclick="makeProblemList()"></p>
+    <div class="gachaOption">
+      <h3>●問題の抽出方法</h3>
+      <form id="extractProblems">
+        <input type="radio" name="extractProblemsProperty" id="shuffleProblems" value="a" checked> 全ての問題を抽出する<br>
+        <input type="radio" name="extractProblemsProperty" id="shuffleProblems" value="b"> 一度でも間違えた問題を抽出する<br>
+        <input type="radio" name="extractProblemsProperty" id="shuffleProblems" value="c"> 最後に間違えた問題を抽出する<br>
+        <input type="radio" name="extractProblemsProperty" id="shuffleProblems" value="d"> 一度も正解したことのない問題を抽出する<br>
+        <input type="radio" name="extractProblemsProperty" id="shuffleProblems" value="e"> 一度も取り組んだことのない問題を抽出する
+      </form>
+    </div>
+
+    <div class="gachaOption">
+      <h3>●表示順</h3>
+      <form id="orderProblems">
+        <input type="radio" name="orderProblemsProperty" id="shuffleProblems" value="a" checked> 表示順をシャッフルする<br>
+        <input type="radio" name="orderProblemsProperty" id="sortProblems" value="b"> 問題集の掲載順で表示する(昇順ソート)<br>
+        <input type="radio" name="orderProblemsProperty" id="sortExemptionProblems" value="c"> 午前免除試験の出題順で表示する(表示順をシャッフル
+        &#38; T→M→Sの順で表示)
+      </form>
+    </div>
+
+    <p><input type="button" id="searchProblems" value="検索" onclick="makeChoiceList()"></p>
   </div>
 
   <script src="script/script.js"></script>
