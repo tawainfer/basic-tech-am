@@ -16,13 +16,11 @@ let schedule = [
 ]
 let oldYear = 1994;
 let newYear = 2019;
-let upYear = 2021;
-let downYear = 2017;
+let upYear = 0;
+let downYear = 0;
+let problemList = [[], [], [], []]; // all, T, M, S
+let extractList = [[], [], [], []];
 let choiceList = [];
-let problemListAll = [];
-let problemListT = [];
-let problemListM = [];
-let problemListS = [];
 // let startTime = 0;
 // let endTime = 0;
 
@@ -174,6 +172,7 @@ let makeObject = (e, isProblem) => {
     e["year"] = 0;
     e["answerMark"] = "";
     e["genre"] = "";
+    e["answerText"] = "";
   } else {
     e["name"] = "";
     e["problemCnt"] = 0;
@@ -251,11 +250,11 @@ let processSection = v => {
 // 問題の処理
 let processProblem = (v, cnt) => {
   for (let probIndex = 0; probIndex < cnt; probIndex++) {
-    problemListAll.push([unitIndex, chapIndex, sectIndex, probIndex]);
+    problemList[0].push([unitIndex, chapIndex, sectIndex, probIndex]);
 
-    if (unitIndex < 7) problemListT.push([unitIndex, chapIndex, sectIndex, probIndex]);
-    else if (unitIndex === 7) problemListS.push([unitIndex, chapIndex, sectIndex, probIndex]);
-    else problemListM.push([unitIndex, chapIndex, sectIndex, probIndex]);
+    if (unitIndex < 7) problemList[1].push([unitIndex, chapIndex, sectIndex, probIndex]);
+    else if (unitIndex === 7) problemList[3].push([unitIndex, chapIndex, sectIndex, probIndex]);
+    else problemList[2].push([unitIndex, chapIndex, sectIndex, probIndex]);
 
     let e = problem[unitIndex][chapIndex][sectIndex][probIndex];
     e = makeObject(e, true);
@@ -276,6 +275,8 @@ let processProblem = (v, cnt) => {
     else e["genre"] = "M";
 
     let s = v[probIndex];
+    e["answerText"] = s;
+
     for (let i = 0; i < s.length; i++) {
       e["solveCnt"]++;
 
@@ -376,14 +377,14 @@ let generateUnitTable = (p, e) => {
   let sum2 = all["solveCnt"].length - binarySearch(all["solveCnt"], 1);
   let achievement = all["evenOnceAnswer"];
   let rate2 = ((achievement / sum2 * 100).toFixed(2));
-  if(sum2 === 0) rate2 = (0 / 1).toFixed(2);
+  if (sum2 === 0) rate2 = (0 / 1).toFixed(2);
   rate = (achievement / sum * 100).toFixed(2);
   document.getElementById("allAchievementA").innerHTML = `<span style="color:${changeColor(rate2)};">${rate2}%(${sum2}問中${achievement}問正解)</span>`;
   document.getElementById("allAchievementB").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${achievement}問正解)</span>`;
 
   let last = all["lastAnswer"];
   let rate3 = (last / sum2 * 100).toFixed(2);
-  if(sum2 === 0) rate3 = (0 / 1).toFixed(2);
+  if (sum2 === 0) rate3 = (0 / 1).toFixed(2);
   rate = (last / sum * 100).toFixed(2);
   document.getElementById("allUnderstandingA").innerHTML = `<span style="color:${changeColor(rate)};">${rate3}%(${sum2}問中${last}問正解)</span>`;
   document.getElementById("allUnderstandingB").innerHTML = `<span style="color:${changeColor(rate)};">${rate}%(${sum}問中${last}問正解)</span>`;
@@ -421,7 +422,7 @@ let generateUnitTable = (p, e) => {
     let sum = unit[i]["solveCnt"].length - binarySearch(unit[i]["solveCnt"], 1);
     let achievement = unit[i]["evenOnceAnswer"];
     let rate = (achievement / sum * 100).toFixed(2);
-    if(sum === 0) rate = (0 / 1).toFixed(2);
+    if (sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -440,7 +441,7 @@ let generateUnitTable = (p, e) => {
     let sum = unit[i]["solveCnt"].length - binarySearch(unit[i]["solveCnt"], 1);
     let last = unit[i]["lastAnswer"];
     let rate = (last / sum * 100).toFixed(2);
-    if(sum === 0) rate = (0 / 1).toFixed(2);
+    if (sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -498,7 +499,7 @@ let generateChapterTable = (p, e, u) => {
     let sum = chapter[u][i]["solveCnt"].length - binarySearch(chapter[u][i]["solveCnt"], 1);
     let achievement = chapter[u][i]["evenOnceAnswer"];
     let rate = (achievement / sum * 100).toFixed(2);
-    if(sum === 0) rate = (0 / 1).toFixed(2);
+    if (sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -517,7 +518,7 @@ let generateChapterTable = (p, e, u) => {
     let sum = chapter[u][i]["solveCnt"].length - binarySearch(chapter[u][i]["solveCnt"], 1);
     let last = chapter[u][i]["lastAnswer"];
     let rate = (last / sum * 100).toFixed(2);
-    if(sum === 0) rate = (0 / 1).toFixed(2);
+    if (sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -576,7 +577,7 @@ let generateSectionTable = (p, e, u, c) => {
     let sum = section[u][c][i]["solveCnt"].length - binarySearch(section[u][c][i]["solveCnt"], 1);
     let achievement = section[u][c][i]["evenOnceAnswer"];
     let rate = (achievement / sum * 100).toFixed(2);
-    if(sum === 0) rate = (0 / 1).toFixed(2);
+    if (sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${achievement} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -595,7 +596,7 @@ let generateSectionTable = (p, e, u, c) => {
     let sum = section[u][c][i]["solveCnt"].length - binarySearch(section[u][c][i]["solveCnt"], 1);
     let last = section[u][c][i]["lastAnswer"];
     let rate = (last / sum * 100).toFixed(2);
-    if(sum === 0) rate = (0 / 1).toFixed(2);
+    if (sum === 0) rate = (0 / 1).toFixed(2);
     s += `<td style="background-color: ${changeBackgroundColor(rate)};"><span style="color:${changeColor(rate)};">${rate}%<br>(${last} / ${sum})</span></td>`;
   }
   s += "</tr>";
@@ -693,6 +694,8 @@ let changeDisplay = (u, c, si) => {
   if (u !== 0) document.getElementById(`table${u}_0_0`).style.display = "block";
   if (c !== 0) document.getElementById(`table${u}_${c}_0`).style.display = "block";
   if (si !== 0) document.getElementById(`table${u}_${c}_${si}`).style.display = "block";
+
+  scrollTo(0, 9999);
 }
 
 let changeColor = n => {
@@ -748,7 +751,7 @@ let makeSelectOption = () => {
 }
 
 let changeShowingMode = () => {
-  if (document.getElementById("radioShowingAll").checked) {
+  if (document.getElementById("showingAll").checked) {
     document.getElementById("questionAll").style.display = "block";
     document.getElementById("questionGenre").style.display = "none";
   } else {
@@ -769,79 +772,346 @@ let shuffleArray = v => {
   return v;
 }
 
-let makeProblemList = () => {
-  let p = document.getElementById("problemList");
-  if (p != null) p.remove();
-  p = document.createElement("ul");
-  p.setAttribute("id", "problemList");
-  choiceList.length = 0;
-  problemListAll.sort((a, b) => {
-    for (let i = 0; i < 4; i++) {
-      if (a[i] > b[i]) return 1;
-      if (a[i] < b[i]) return -1;
+let changeShowingAnswer = () => {
+  if (document.getElementById("checkShowingAnswer").checked) {
+    for (let i = 0; i < choiceList.length; i++) {
+      if (i % 2 == 0) {
+        document.getElementById(`list${i}_${7}`).style.backgroundColor = "#ddd";
+      } else {
+        document.getElementById(`list${i}_${7}`).style.backgroundColor = "#eee";
+      }
     }
-  });
-  problemListT.sort((a, b) => {
-    for (let i = 0; i < 4; i++) {
-      if (a[i] > b[i]) return 1;
-      if (a[i] < b[i]) return -1;
+  } else {
+    for (let i = 0; i < choiceList.length; i++) {
+      document.getElementById(`list${i}_${7}`).style.backgroundColor = "#000";
     }
-  });
-  problemListM.sort((a, b) => {
-    for (let i = 0; i < 4; i++) {
-      if (a[i] > b[i]) return 1;
-      if (a[i] < b[i]) return -1;
-    }
-  });
-  problemListS.sort((a, b) => {
-    for (let i = 0; i < 4; i++) {
-      if (a[i] > b[i]) return 1;
-      if (a[i] < b[i]) return -1;
-    }
-  });
+  }
+}
+
+let makeChoiceList = () => {
   downYear = document.getElementById("selectDownYear").value;
   upYear = document.getElementById("selectUpYear").value;
-  console.log(problemListAll, problemListT, problemListM, problemListS);
-  if (document.getElementById("radioShowingAll").checked) {
-    let problemMaxAll = Math.min(problemListAll.length, document.getElementById("numberAll").value);
-    console.log(problemMaxAll);
 
-    problemListAll = shuffleArray(problemListAll);
-    console.log(problemListAll);
-  } else {
-    let problemMaxT = Math.min(problemListT.length, document.getElementById("numberT").value);
-    let problemMaxM = Math.min(problemListM.length, document.getElementById("numberM").value);
-    let problemMaxS = Math.min(problemListS.length, document.getElementById("numberS").value);
-    console.log(problemMaxT, problemMaxM, problemMaxS);
+  let m = document.getElementById("results");
+  if (m != null) m.remove();
+  m = document.createElement("p");
+  m.setAttribute("id", "results");
 
-    problemListT = shuffleArray(problemListT);
-    problemListM = shuffleArray(problemListM);
-    problemListS = shuffleArray(problemListS);
-    console.log(problemListT, problemListM, problemListS);
-  }
+  let c = document.getElementById("checkShowingAnswer");
+  if (c != null) c.remove();
+  c = document.createElement("input");
+  c.setAttribute("type", "checkbox");
+  c.setAttribute("id", "checkShowingAnswer");
+  c.setAttribute("onchange", "changeShowingAnswer()");
+  // document.getElementById("gacha").appendChild(c);
 
-  let choiceCnt = 0;
-  for (let i = 0; i < unit.length; i++) {
-    for (let j = 0; j < chapter[i].length; j++) {
-      for (let k = 0; k < section[i][j].length; k++) {
-        for (let l = 0; l < problem[i][j][k].length; l++) {
-          let prob = problem[i][j][k][l];
+  let t = document.getElementById("showingMessage");
+  if (t != null) t.remove();
+  t = document.createElement("span");
+  t.setAttribute("id", "showingMessage");
+  // document.getElementById("gacha").appendChild(t);
+  t.innerHTML = " 答えを表示する<br>";
 
-          if (downYear <= prob["year"] && prob["year"] <= upYear) {
-            if (document.getElementById("radioShowingAll").checked) {
+  let p = document.getElementById("choiceList");
+  if (p != null) p.remove();
+  p = document.createElement("table");
+  p.setAttribute("id", "choiceList");
+  p.style.width = "100%";
+  p.style.marginTop = "5px";
+  p.style.tableLayout = "fixed";
 
-            } else {
+  for (let i = 0; i < 4; i++) extractList[i].length = 0;
+  choiceList.length = 0;
 
+  // 問題を抽出する
+  let form = document.getElementById("extractProblems");
+  let radioValue = form.extractProblemsProperty.value;
+
+  switch (radioValue) {
+    case 'a':
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < problemList[i].length; j++) {
+          let v = problemList[i][j];
+          let e1 = v[0], e2 = v[1], e3 = v[2], e4 = v[3];
+          if (downYear <= problem[e1][e2][e3][e4]["year"] && problem[e1][e2][e3][e4]["year"] <= upYear) {
+            extractList[i].push(problemList[i][j]);
+          }
+        }
+      }
+      break;
+
+    case 'b':
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < problemList[i].length; j++) {
+          let v = problemList[i][j];
+          let e1 = v[0], e2 = v[1], e3 = v[2], e4 = v[3];
+          if (downYear <= problem[e1][e2][e3][e4]["year"] && problem[e1][e2][e3][e4]["year"] <= upYear) {
+            if ((!problem[e1][e2][e3][e4]["lastAnswer"]) && (problem[e1][e2][e3][e4]["solveCnt"] > 0)) {
+              if (problem[e1][e2][e3][e4]["evenOnceWrong"]) {
+                extractList[i].push(problemList[i][j]);
+              }
             }
           }
         }
       }
+      break;
+
+    case 'c':
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < problemList[i].length; j++) {
+          let v = problemList[i][j];
+          let e1 = v[0], e2 = v[1], e3 = v[2], e4 = v[3];
+          if (downYear <= problem[e1][e2][e3][e4]["year"] && problem[e1][e2][e3][e4]["year"] <= upYear) {
+            if ((!problem[e1][e2][e3][e4]["lastAnswer"]) && (problem[e1][e2][e3][e4]["solveCnt"] > 0)) {
+              extractList[i].push(problemList[i][j]);
+            }
+          }
+        }
+      }
+      break;
+
+
+    case 'd':
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < problemList[i].length; j++) {
+          let v = problemList[i][j];
+          let e1 = v[0], e2 = v[1], e3 = v[2], e4 = v[3];
+          if (downYear <= problem[e1][e2][e3][e4]["year"] && problem[e1][e2][e3][e4]["year"] <= upYear) {
+            if (!problem[e1][e2][e3][e4]["evenOnceAnswer"]) {
+              extractList[i].push(problemList[i][j]);
+            }
+          }
+        }
+      }
+      break;
+
+
+    case 'e':
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < problemList[i].length; j++) {
+          let v = problemList[i][j];
+          let e1 = v[0], e2 = v[1], e3 = v[2], e4 = v[3];
+          if (downYear <= problem[e1][e2][e3][e4]["year"] && problem[e1][e2][e3][e4]["year"] <= upYear) {
+            if (problem[e1][e2][e3][e4]["solveCnt"] === 0) {
+              extractList[i].push(problemList[i][j]);
+            }
+          }
+        }
+      }
+      break;
+  }
+
+  // 指定した表示順に問題を整理する
+  let maxCnt = [];
+  maxCnt.push(document.getElementById("numberAll").value);
+  maxCnt.push(document.getElementById("numberT").value);
+  maxCnt.push(document.getElementById("numberM").value);
+  maxCnt.push(document.getElementById("numberS").value);
+  for (let i = 0; i < 4; i++) if (maxCnt[i] <= 0) maxCnt[i] = 10000;
+
+  form = document.getElementById("orderProblems");
+  radioValue = form.orderProblemsProperty.value;
+  // console.log(maxCnt[0], maxCnt[1], maxCnt[2], maxCnt[3]);
+  let cnt = 0;
+  if (document.getElementById("showingAll").checked) {
+    switch (radioValue) {
+      case 'a':
+        extractList[0] = shuffleArray(extractList[0]);
+        for (let j = 0; j < extractList[0].length; j++) {
+          if (cnt >= maxCnt[0]) break;
+          choiceList.push(extractList[0][j]);
+          cnt++;
+        }
+        break;
+
+      case 'b':
+        for (let j = 0; j < extractList[0].length; j++) {
+          if (cnt >= maxCnt[0]) break;
+          choiceList.push(extractList[0][j]);
+          cnt++;
+        }
+        break;
+
+      case 'c':
+        extractList[0] = shuffleArray(extractList[0]);
+        extractList[0].sort((a, b) => {
+          for (let j = 0; j < 4; j++) {
+            if ((a[j] < 7) && (7 <= b[j])) return -1;
+            if ((b[j] < 7) && (7 <= a[j])) return 1;
+            if ((a[j] === 7) && (7 < b[j])) return 1;
+            if ((b[j] === 7) && (7 < a[j])) return -1;
+          }
+        });
+        for (let j = 0; j < extractList[0].length; j++) {
+          if (cnt >= maxCnt[0]) break;
+          choiceList.push(extractList[0][j]);
+          cnt++;
+        }
+        break;
+    }
+  } else {
+    switch (radioValue) {
+      case 'a':
+        for (let i = 1; i < 4; i++) {
+          extractList[i] = shuffleArray(extractList[i]);
+          cnt = 0;
+          for (let j = 0; j < extractList[i].length; j++) {
+            if (cnt >= maxCnt[i]) break;
+            choiceList.push(extractList[i][j]);
+            cnt++;
+          }
+        }
+        choiceList = shuffleArray(choiceList);
+        break;
+
+      case 'b':
+        for (let i = 0; i <= 4; i += 2) {
+          let ii = i % 3 + 1;
+          cnt = 0;
+          for (let j = 0; j < extractList[ii].length; j++) {
+            if (cnt >= maxCnt[ii]) break;
+            choiceList.push(extractList[ii][j]);
+            cnt++;
+          }
+        }
+        break;
+
+      case 'c':
+        for (let i = 1; i < 4; i++) {
+          extractList[i] = shuffleArray(extractList[i]);
+        }
+        for (let i = 1; i < 4; i++) {
+          cnt = 0;
+          for (let j = 0; j < extractList[i].length; j++) {
+            if (cnt >= maxCnt[i]) break;
+            choiceList.push(extractList[i][j]);
+            cnt++;
+          }
+        }
+        break;
     }
   }
 
-  choiceList.forEach(e => {
-    console.log(e[0] + 1, e[1] + 1, e[2] + 1, e[3] + 1);
-  });
+  // リスト(表)を生成してHTMLに反映させる
+  let widthArray = [65, 120, 40, 315, 315, 315, 65, 40];
+  m.innerHTML = `表示した問題数：${choiceList.length}問`;
+  m.style.paddingTop = "20px";
+  m.style.borderBottom = "1px solid #000";
+  m.style.fontWeight = "Bold";
+  m.style.display = "inline-block";
+  m.style.marginRight = "5px";
+  document.getElementById("gacha").appendChild(m);
+  document.getElementById("gacha").appendChild(c);
+  document.getElementById("gacha").appendChild(t);
+  let tr = document.createElement("tr");
+
+  for (let i = 0; i <= 7; i++) {
+    let e = document.createElement("th");
+    e.style.width = `${widthArray[i]}px`;
+    e.style.textAlign = "center";
+
+    switch (i) {
+      case 0:
+        e.innerHTML = "番号";
+        break;
+
+      case 1:
+        e.innerHTML = "問題名";
+        break;
+
+      case 2:
+        e.innerHTML = "分野";
+        break;
+
+      case 3:
+        e.innerHTML = "unit名";
+        break;
+
+      case 4:
+        e.innerHTML = "chapter名";
+        break;
+
+      case 5:
+        e.innerHTML = "section名";
+        break;
+
+      case 6:
+        e.innerHTML = "進捗";
+        break;
+
+      case 7:
+        e.innerHTML = "答え";
+        break;
+    }
+
+    tr.appendChild(e);
+  }
+
+  p.appendChild(tr);
+
+  for (let i = 0; i < choiceList.length; i++) {
+    let v = [];
+    for (let j = 0; j < 4; j++) v.push(choiceList[i][j]);
+
+    let tr = document.createElement("tr");
+    tr.setAttribute("id", `list${i}`);
+    if (i % 2 == 0) tr.style.backgroundColor = "#ddd";
+    else tr.style.backgroundColor = "#eee";
+
+    for (let j = 0; j <= 7; j++) {
+      let e = document.createElement("td");
+      e.setAttribute("id", `list${i}_${j}`);
+      e.style.width = `${widthArray[i]}px`;
+      e.style.textAlign = "center";
+
+      switch (j) {
+        case 0:
+          e.innerHTML = `${i + 1}`;
+          break;
+
+        case 1:
+          e.innerHTML = `${v[0] + 1}.${v[1] + 1}(${v[2] + 1}) 問${v[3] + 1}`;
+          e.style.textAlign = "left";
+          break;
+
+        case 2:
+          e.innerHTML = `${problem[v[0]][v[1]][v[2]][v[3]]["genre"]}`;
+          break;
+
+        case 3:
+          e.innerHTML = `${unit[v[0]]["name"]}`;
+          break;
+
+        case 4:
+          e.innerHTML = `${chapter[v[0]][v[1]]["name"]}`;
+          break;
+
+        case 5:
+          e.innerHTML = `${section[v[0]][v[1]][v[2]]["name"]}`;
+          break;
+
+        case 6:
+          e.innerHTML = `${problem[v[0]][v[1]][v[2]][v[3]]["answerText"]}`;
+          e.style.textAlign = "left";
+          break;
+
+        case 7:
+          e.innerHTML = `${problem[v[0]][v[1]][v[2]][v[3]]["answerMark"]}`;
+          e.style.backgroundColor = "#000";
+          break;
+      }
+
+      tr.appendChild(e);
+    }
+
+    p.appendChild(tr);
+  }
+
+  document.getElementById("gacha").appendChild(p);
+  scrollTo(0, 900);
+
+  // for (let i = 0; i < 4; i++) console.log(i, extractList[i].length, extractList[i]);
+  // console.log(choiceList.length, choiceList);
 }
 
 let magicNumber = [20144, 19983, 20054, 20062, 20093, 20094, 20122, 20042, 20164, 20133, 19943, 19983, 19952, 20002, 20064, 20074, 19943, 20032, 19994, 20141, 20023, 20004, 20101, 20073, 20184, 20144, 20123, 19981, 20062, 20011, 20063, 20004, 20074, 20013, 20061, 20002, 20003, 20012, 20074, 20052, 20063, 20062, 20113, 20053, 20181, 20091, 20174, 20063, 20062, 20072, 20054, 20063, 20151, 20004, 20031, 20114, 20004, 20072, 20193, 20123, 20163, 20171, 20121, 20131, 19961, 20184, 20114, 20161, 20192, 20002, 20194, 20184, 20194, 20172, 20143, 20184, 20163, 20074, 20064, 20013, 20051, 20023, 20043, 20161, 20183, 20123, 20193, 20182, 20034, 20191, 20144, 20192, 20104, 20192, 20163, 20181, 20173, 20172, 20182, 20144, 20193, 20193, 20183, 20171, 20093, 20034, 20053, 20162, 20152, 20192, 20023, 20144, 20103, 20174, 20183, 20123, 20072, 20114, 20122, 20103, 20163, 20164, 20032, 20073, 19992, 20154, 19994, 20053, 19991, 20112, 20153, 20101, 20053, 20052, 20141, 20054, 20033, 20172, 20093, 20184, 20012, 20132, 19993, 20044, 20052, 19953, 19983, 20064, 20071, 20161, 20194, 20043, 20014, 20023, 20104, 20121, 19981, 19973, 20051, 20044, 20193, 19994, 20193, 20153, 20192, 20093, 20184, 20041, 20013, 20021, 19994, 19983, 20042, 20134, 20064, 19971, 20191, 20092, 20013, 20174, 20113, 20063, 20163, 20171, 20164, 20052, 20182, 20194, 20114, 20142, 20181, 20154, 20113, 20161, 20151, 20191, 20174, 20093, 20173, 20074, 20104, 20103, 20091, 20124, 20113, 20163, 20111, 20182, 20194, 20181, 20172, 20102, 20001, 19952, 20002, 20194, 20151, 20174, 20032, 20184, 19963, 19993, 20102, 20094, 20132, 20013, 20172, 20134, 20024, 20052, 20054, 20113, 20141, 20153, 20141, 20164, 20063, 20102, 20031, 20163, 20171, 20193, 20164, 20014, 20152, 20183, 20173, 20124, 20194, 20132, 20002, 20143, 20091, 20152, 20121, 20182, 20193, 20133, 20093, 20184, 20193, 20171, 20122, 20171, 20133, 20162, 20154, 20101, 20161, 20172, 20193, 20163, 20093, 20194, 20144, 20072, 20112, 20181, 20162, 20172, 20182, 20194, 20052, 20142, 20012, 20054, 20123, 20062, 20154, 20132, 20141, 20054, 20161, 19972, 20041, 20194, 20151, 20182, 20143, 20133, 20181, 20151, 20183, 20053, 20163, 20173, 20163, 20182, 20183, 20192, 20181, 20193, 20071, 20142, 20171, 20123, 20071, 20041, 20174, 20171, 20123, 20043, 20022, 20171, 20003, 20171, 20161, 20161, 20154, 20172, 20103, 20051, 20162, 20194, 20184, 20163, 20151, 20131, 20174, 20011, 20144, 20184, 20184, 20164, 20143, 20163, 20161, 20181, 20194, 20151, 20104, 20093, 20103, 20163, 20181, 20024, 20052, 20191, 20114, 20073, 20183, 20091, 20124, 20053, 20191, 20072, 20172, 20023, 20193, 20172, 20163, 20022, 19981, 20021, 20032, 20194, 20131, 20162, 20184, 20103, 20093, 20171, 20193, 20171, 20184, 20134, 20192, 20192, 20192, 20182, 20162, 20121, 20192, 20184, 20172, 20132, 20093, 20131, 20161, 20061, 20123, 20032, 20143, 20161, 20101, 20172, 20154, 20093, 20122, 20153, 20144, 20153, 20141, 20154, 20164, 20152, 20183, 20193, 20182, 20184, 20184, 20194, 20174, 20192, 20182, 20141, 20171, 20162, 20132, 20104, 20173, 20121, 20121, 20194, 20133, 20132, 20193, 20192, 20161, 20193, 20174, 20144, 20181, 20171, 20114, 20174, 20173, 20192, 20183, 20192, 20112, 20113, 20142, 20181, 20184, 20184, 20194, 20171, 20162, 20183, 20152, 20123, 20181, 20024, 20023, 20114, 20072, 20094, 19972, 20062, 20193, 20152, 20191, 20192, 20151, 20172, 20172, 20184, 20194, 20163, 20151, 20192, 20184, 20162, 20181, 19953, 20004, 20002, 20154, 20131, 20031, 20114, 20162, 20113, 20194, 20011, 20032, 20124, 20042, 20192, 20031, 20023, 20143, 20162, 20172, 20143, 20171, 20192, 20191, 20183, 19984, 20032, 19943, 20023, 20112, 20184, 20094, 20142, 20074, 20131, 20042, 20171, 20074, 20183, 19984, 20014, 20062, 20001, 20074, 20004, 20152, 20114, 20144, 20114, 20122, 20161, 20181, 20191, 20162, 20191, 20184, 20184, 20163, 20174, 20152, 20193, 20184, 20192, 20172, 20171, 20192, 20183, 20174, 20151, 20184, 20153, 20182, 20173, 20191, 20184, 20103, 20152, 20162, 20164, 20044, 20164, 20073, 20152, 20182, 20191, 20193, 20133, 20103, 20181, 20173, 20193, 20163, 20162, 20143, 20152, 20173, 20191, 20122, 20133, 20104, 20074, 20062, 20153, 20172, 20143, 20192, 20132, 20191, 20154, 20173, 20153, 20181, 20163, 20124, 20152, 20143, 20183, 20171, 20192, 20183, 20182, 20193, 20112, 20174, 20163, 20191, 20143, 20134, 20194, 20193, 20183, 20163, 20183, 20094, 20122, 20184, 20194, 20192, 20173, 20192, 20163, 20184, 20193, 20162, 20181, 20164, 20192, 20043, 20134, 20141, 20171, 20183, 20154, 20103, 20183, 20191, 20193, 20152, 20183, 20103, 19983, 20053, 20143, 20122, 20144, 20192, 20161, 20002, 19991, 20022, 20044, 20131, 20194, 20162, 20194, 20154, 20194, 19971, 20043, 20004, 20173, 20122, 20183, 20102, 20151, 20121, 20024, 20071, 20023, 20183, 20054, 20141, 20052, 20144, 20192, 20163, 20194, 20184, 20193, 20012, 20161, 20162, 20194, 20172, 20021, 20153, 20123, 20174, 20182, 20173, 20152, 20184, 20173, 20033, 20182, 20142, 20111, 20122, 20172, 20152, 20052, 20193, 20194, 20103, 20144, 20192, 20133, 20174, 20194, 20101, 20164, 20152, 20193, 20104, 19992, 20154, 20144, 20191, 20073, 20191, 20193, 20193, 20164, 20114, 20184, 20111, 20003, 20164, 20184, 20184, 20183, 20142, 20184, 20042, 20162, 20181, 20174, 20161, 20103, 20111, 20191, 20172, 20183, 20071, 20144, 20092, 20183, 20143, 20154, 20192, 20093, 20194, 20112, 20164, 20174, 20161, 20184, 20101, 20111, 20132, 20101, 20122, 20173, 20151, 20114, 20184, 20064, 20181, 20094, 20173, 20183, 20141, 20181, 20092, 20143, 20161, 20172, 20173, 20151, 20193, 20143, 20191, 20093, 20111, 20062, 20151, 20093, 20193, 20162, 20174, 20192, 20192, 20182, 20164, 20162, 20162, 20173, 20152, 20172, 20164, 20182, 20183, 20192, 20191, 20194, 20024, 20171, 20181, 20181, 20193, 20193, 20182, 20183, 20172, 20161, 20173, 20192, 20191, 20172, 20112, 20142, 20181, 20104, 20184, 20194, 20143, 20144, 20152, 20183, 20193, 20172, 20163, 20143, 20152, 20152, 20152, 20163, 20191, 20184, 20184, 20182, 20141, 20164, 20152, 20194, 20194, 20094, 20173, 20173, 20183, 20171, 20163, 20152, 20112, 20173, 20091, 20172, 20191, 20164, 20181, 20182, 20172, 20194, 20184, 20124, 20163, 20192, 20184, 20131, 20191, 20154, 20164, 20062, 20162, 20151, 20161, 20183, 20153, 20191, 20102, 20132, 20124, 20184, 20182, 20172, 20153, 20141, 20182, 20171, 20192, 20181, 20144, 20103, 20192, 20194, 20173, 20182, 20163, 20163, 20184, 20174, 20092, 20032, 20111, 20173, 20091, 20131, 20154, 20101, 20182, 20001, 20073, 20192, 20121, 20184, 20113, 20192, 20184, 20182, 20192, 20164, 20191, 20194, 20193, 20174, 20163, 20154, 20064, 20154, 20154, 20101, 20144, 20113, 20191, 20092, 20092, 20171, 20072, 20062, 20124, 20104, 20112, 20193, 20184, 20172, 20182, 20173, 20194, 20142, 20133, 20172, 20182, 20164, 20134, 20121, 20154, 20183, 20174, 20172, 20182, 20142, 20132, 20173, 20184, 20191, 20163, 20071, 20093, 20063, 20091, 20104, 20123, 20162, 20073, 20181, 20144, 20113, 20191, 20184, 20153, 20161, 20131, 20192, 20144, 20184, 20192, 20164, 20153, 20192, 20194, 20182, 20131, 20194, 20193, 20162, 20173, 20183, 20193, 20184, 20154, 20191, 20131, 20192, 20192, 20192, 20144, 20172, 20181, 20094, 20173, 20191, 20191, 20174, 20181, 20171, 20182, 20194, 20163, 20142, 20182, 20171, 20163, 20194, 20194, 20124, 20191, 20171, 20171, 20182, 20173, 20191, 20184, 20192, 20174, 20182, 20194, 20184, 20154, 20112, 20151];
