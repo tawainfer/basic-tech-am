@@ -11,6 +11,7 @@ body {
 #top {
   margin-left: 15px;
   margin-top: 15px;
+  padding-bottom: 15px;
 }
 
 h1 {
@@ -21,6 +22,7 @@ h1 {
   display: inline-block;
   border: 1.5px solid #000000;
   padding: 5px;
+  margin-bottom: 20px;
 }
 
 #countdown table {
@@ -34,6 +36,10 @@ h1 {
   border: 1px solid #000;
   width: 120px;
   padding: 10px;
+}
+
+#option {
+  padding-top: 5px;
 }
 
 #settingBorder {
@@ -65,6 +71,7 @@ h1 {
 
 #news p {
   padding-left: 15px;
+  padding-right: 15px;
   margin: 0px 0px 10px 0px;
   line-height: 26px;
 }
@@ -72,24 +79,27 @@ h1 {
 #menu {
   display: none;
   padding-left: 15px;
+  padding-top: 10px;
 }
 
 #menu input {
   display: inline-block;
-  width: 100px; /* ボックスの横幅を指定する */
-  height: 45px; /* ボックスの高さを指定する */
-  padding-left: 5px; /* ボックス内左側の余白を指定する */
-  padding-right: 5px; /* ボックス内御右側の余白を指定する */
-  text-align: center; /* テキストのセンタリングを指定する */
-  line-height: 45px; /* 行の高さを指定する */
-  cursor: pointer; /* マウスカーソルの形（リンクカーソル）を指定する */
-  border: 2px solid #006dd9;/* ボックスの境界線を実線で指定する */
-  border-radius: 5px; /* 角丸を指定する */
+  width: 100px;
+  height: 45px;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+  line-height: 45px;
+  cursor: pointer;
+  border: 2px solid #006dd9;
+  border-radius: 5px;
 }
 
 #data p {
   font-size: 24px;
   font-weight: bold;
+  margin-bottom: 0px;
+  padding-bottom: 30px;
 }
 
 #all {
@@ -113,6 +123,7 @@ h1 {
 
 #data table th, td {
   width: 200px;
+  white-space: normal;
 }
 
 #data div {
@@ -121,10 +132,52 @@ h1 {
 
 #gacha {
   display: none;
+  padding-top: 15px;
   padding-left: 15px;
+  padding-right: 15px;
+}
+
+#gacha div.gachaOption {
+  padding-top: 0px;
+  padding-top: 30px;
+}
+
+#gacha h3 {
+  font-size: 18px;
 }
 
 #gacha select {
   display: inline;
   width: 80px;
+}
+
+#gacha #questionAll {
+  display: none;
+}
+
+#gacha #questionAll p {
+  display: inline-block;
+  padding: 5px;
+}
+
+#gacha #questionAll input.questionCnt {
+  width: 80px;
+}
+
+#gacha #questionGenre p {
+  display: inline-block;
+  padding: 5px;
+}
+
+#gacha #questionGenre input.questionCnt {
+  width: 80px;
+}
+
+#gacha #questionAll, #questionGenre {
+  padding-top: 15px;
+}
+
+#gacha #searchProblems {
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
