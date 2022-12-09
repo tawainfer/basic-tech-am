@@ -30,8 +30,8 @@
         </tr>
         <tr>
           <td>残り時間</td>
-          <td><span id="day1"></span>日<span id="hour1"></span>時間<span id="min1"></span>分<span id="sec1"></span>秒</td>
-          <td><span id="day2"></span>日<span id="hour2"></span>時間<span id="min2"></span>分<span id="sec2"></span>秒</td>
+          <td><span style="color: #e00;"><span id="day1"></span>日<span id="hour1"></span>時間<span id="min1"></span>分<span id="sec1"></span>秒</td>
+          <td><span id="day2"></span>日<span id="hour2"></span>時間<span id="min2"></span>分<span id="sec2"></span>秒</span></td>
         </tr>
       </table>
     </div>
@@ -55,6 +55,7 @@
 
   <section id="news">
     <h2>更新履歴</h2>
+    <p><i>2022-12-09</i><br>姉妹サイト「<a href="https://tawainfer.github.io/applied-tech-am/">応用情報 午前問題集 進捗確認</a>」を公開しました。</p>
     <p><i>2022-12-01</i><br>問題ガチャを実装しました。CSVファイルの読み込み後に表示されるメニューで「Gacha」をクリックすると表示されます。また、単元名のリンクをクリックした際に自動で下層へスクロールされるようになりました。その他、一部レイアウトを修正しました。</p>
     <p><i>2022-11-30</i><br>達成率Aと理解度Aの表示で1問も解答していない場合に「NaN%」と表示される点を修正しました。</p>
     <p><i>2022-11-28</i><br>達成率と理解度をA(未解答を除外)・B(未解答は不正解扱い)の2種類に細分化しました。</p>
@@ -140,16 +141,16 @@
       </div>
     </div>
 
-    <div class="gachaOption">
-      <h3>●問題の抽出方法</h3>
-      <form id="extractProblems">
-        <input type="radio" name="extractProblemsProperty" id="shuffleProblems" value="a" checked> 全ての問題を抽出する<br>
-        <input type="radio" name="extractProblemsProperty" id="shuffleProblems" value="b"> 一度でも間違えた問題を抽出する<br>
-        <input type="radio" name="extractProblemsProperty" id="shuffleProblems" value="c"> 最後に間違えた問題を抽出する<br>
-        <input type="radio" name="extractProblemsProperty" id="shuffleProblems" value="d"> 一度も正解したことのない問題を抽出する<br>
-        <input type="radio" name="extractProblemsProperty" id="shuffleProblems" value="e"> 一度も取り組んだことのない問題を抽出する
-      </form>
-    </div>
+      <div class="gachaOption">
+        <h3>●問題の抽出方法</h3>
+        <form id="extractProblems">
+          <input type="radio" name="extractProblemsProperty" value="a" checked> 全ての問題を抽出する<br>
+          <input type="radio" name="extractProblemsProperty" value="b"> 一度でも間違えた問題を抽出する<br>
+          <input type="radio" name="extractProblemsProperty" value="c"> 最後に間違えた問題を抽出する<br>
+          <input type="radio" name="extractProblemsProperty" value="d"> 一度も正解したことのない問題を抽出する<br>
+          <input type="radio" name="extractProblemsProperty" value="e"> 一度も取り組んだことのない問題を抽出する
+        </form>
+      </div>
 
     <div class="gachaOption">
       <h3>●表示順</h3>
